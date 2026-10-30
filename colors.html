@@ -20,19 +20,38 @@
         header { text-align: center; margin-bottom: 32px; }
         header h1 { font-size: 2.2rem; font-weight: 900; margin-bottom: 8px; background: linear-gradient(135deg, #a5b4fc, #f472b6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         header p { color: var(--text-secondary); }
-        .mix-section { display: grid; grid-template-columns: 1fr auto 1fr; gap: 20px; align-items: center; margin-bottom: 32px; }
-        .color-card { background: rgba(15, 23, 42, 0.6); border: 1px solid var(--card-border); border-radius: 16px; padding: 20px; display: flex; flex-direction: column; align-items: center; gap: 16px; }
-        .color-preview { width: 100%; height: 120px; border-radius: 12px; border: 2px solid rgba(255, 255, 255, 0.1); cursor: pointer; position: relative; overflow: hidden; }
+        .mix-section { display: grid; grid-template-columns: 1fr auto 1fr; gap: 20px; align-items: center; margin-bottom: 32px; transition: gap 280ms ease, margin 280ms ease, grid-template-columns 280ms ease; }
+                .color-card { background: rgba(15, 23, 42, 0.6); border: 1px solid var(--card-border); border-radius: 16px; padding: 20px; display: flex; flex-direction: column; align-items: center; gap: 16px; transition: padding 280ms ease, gap 280ms ease, border-radius 280ms ease; }
+        .color-preview { width: 100%; height: 120px; border-radius: 12px; border: 2px solid rgba(255, 255, 255, 0.1); cursor: pointer; position: relative; overflow: hidden; transition: width 280ms ease, height 280ms ease, flex-basis 280ms ease, border-radius 280ms ease; }
         .color-input-field { opacity: 0; position: absolute; top: 0; left: 0; width: 100%; height: 100%; cursor: pointer; }
         .hex-input { width: 100%; background: #0f172a; border: 1px solid var(--card-border); border-radius: 8px; padding: 8px 12px; color: var(--text-primary); text-align: center; outline: none; }
         .hex-input[aria-invalid="true"] { border-color: #fb7185; }
-        .result-section { background: rgba(15, 23, 42, 0.8); border: 1px solid var(--card-border); border-radius: 20px; padding: 24px; text-align: center; }
-        .result-title { font-size: 1.25rem; font-weight: 700; color: var(--text-primary); margin-bottom: 16px; }
-        .color-name-highlight { color: #f472b6; font-size: 1.5rem; font-weight: 900; }
-        .result-preview { width: 100%; height: 160px; border-radius: 16px; margin: 16px 0; transition: background-color 0.3s ease; }
-        .value-badge { background: rgba(255, 255, 255, 0.08); padding: 8px 16px; border-radius: 10px; font-family: monospace; cursor: pointer; display: inline-block; margin: 5px; }
+        .result-section { background: rgba(15, 23, 42, 0.8); border: 1px solid var(--card-border); border-radius: 20px; padding: 24px; text-align: center; transition: padding 280ms ease, border-radius 280ms ease, gap 280ms ease; }
+        .preview-dock-space { position: relative; }
+        .preview-dock { position: relative; z-index: 20; transition: padding 280ms ease, margin 280ms ease, background-color 280ms ease, box-shadow 280ms ease, border-color 280ms ease, width 280ms ease; }
+        .preview-dock.is-compact { position: fixed; top: 8px; left: 50%; width: min(calc(100vw - 104px), 1036px); transform: translateX(-50%); display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 8px; align-items: stretch; margin: 0; padding: 8px; border: 1px solid var(--card-border); border-radius: 16px; background: rgba(15, 23, 42, 0.96); box-shadow: 0 12px 28px rgba(0, 0, 0, 0.4); backdrop-filter: blur(16px); }
+        .preview-dock.is-compact .mix-section { gap: 6px; margin: 0; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); }
+        .preview-dock.is-compact .color-card { flex-direction: row; gap: 6px; padding: 7px; border-radius: 10px; min-width: 0; }
+        .preview-dock.is-compact .color-card h3 { font-size: 0.75rem; line-height: 1.15; }
+        .preview-dock.is-compact .input-color-name { overflow-wrap: anywhere; }
+        .preview-dock.is-compact .color-preview { flex: 0 0 34px; width: 34px; height: 30px; border-radius: 6px; }
+        .preview-dock.is-compact .hex-input { display: none; }
+        .preview-dock.is-compact .result-section { display: grid; grid-template-columns: minmax(0, 1fr) 42px; align-items: center; gap: 4px 8px; padding: 8px; border-radius: 12px; }
+        .preview-dock.is-compact .result-title { margin: 0; font-size: 0.82rem; line-height: 1.2; }
+        .preview-dock.is-compact .color-name-highlight { font-size: 1rem; }
+        .preview-dock.is-compact .result-preview { grid-column: 2; grid-row: 1; width: 42px; height: 30px; margin: 0; border-radius: 6px; }
+        .preview-dock.is-compact .result-section > div:last-child { grid-column: 1 / -1; }
+        .preview-dock.is-compact .value-badge { margin: 0 2px; padding: 4px 6px; font-size: 0.68rem; }
+        .result-title { font-size: 1.25rem; font-weight: 700; color: var(--text-primary); margin-bottom: 16px; transition: font-size 280ms ease, margin 280ms ease; }
+        .color-name-highlight { color: #f472b6; font-size: 1.5rem; font-weight: 900; transition: color 0.3s ease; }
+        .result-preview { width: 100%; height: 160px; border-radius: 16px; margin: 16px 0; transition: background-color 0.3s ease, width 280ms ease, height 280ms ease, margin 280ms ease, border-radius 280ms ease; }
+        .value-badge { background: rgba(255, 255, 255, 0.08); padding: 8px 16px; border-radius: 10px; font-family: monospace; cursor: pointer; display: inline-block; margin: 5px; transition: padding 280ms ease, font-size 280ms ease, margin 280ms ease; }
         .color-library { margin-top: 32px; }
         .library-heading { display: flex; justify-content: space-between; align-items: end; gap: 16px; margin-bottom: 16px; }
+        .library-summary { cursor: pointer; list-style: none; }
+        .library-summary::-webkit-details-marker { display: none; }
+        .library-summary::after { content: "+"; color: var(--accent); font-size: 1.6rem; font-weight: 700; }
+        .library-details[open] > .library-summary::after { content: "−"; }
         .library-heading p, .library-hint { color: var(--text-secondary); font-size: 0.95rem; }
         .target-picker { display: flex; gap: 8px; margin: 14px 0; }
         .target-button, .search-input { background: #0f172a; border: 1px solid var(--card-border); border-radius: 10px; color: var(--text-primary); padding: 10px 14px; }
@@ -53,21 +72,25 @@
             .mix-section { grid-template-columns: 1fr; gap: 12px; }
             .mix-section > div:nth-child(2) { text-align: center; }
             .library-heading { align-items: flex-start; flex-direction: column; }
+            .preview-dock.is-compact { width: calc(100vw - 60px); grid-template-columns: minmax(0, 1fr); margin: 0; padding: 6px; }
+            .preview-dock.is-compact .result-section { grid-template-columns: minmax(0, 1fr) 42px; }
         }
     </style>
 </head>
 <body>
     <div class="container">
         <header><h1>مختبر دمج الألوان</h1><p>اكتشف درجات الألوان وامزجها واحصل على أقرب اسم للنتيجة.</p></header>
+        <div class="preview-dock-space" id="previewDockSpace">
+        <div class="preview-dock" id="previewDock">
         <div class="mix-section">
             <div class="color-card">
-                <h3>اللون الأول</h3>
+                <h3>اللون الأول: <span id="colorName1" class="input-color-name">أزرق</span></h3>
                 <div class="color-preview" id="preview1" style="background-color: #3b82f6;"><input type="color" id="picker1" class="color-input-field" value="#3b82f6"></div>
                 <input type="text" id="hex1" class="hex-input" value="#3b82f6" aria-label="قيمة HEX للون الأول" maxlength="7" spellcheck="false">
             </div>
             <div style="font-size: 2rem;">+</div>
             <div class="color-card">
-                <h3>اللون الثاني</h3>
+                <h3>اللون الثاني: <span id="colorName2" class="input-color-name">وردي</span></h3>
                 <div class="color-preview" id="preview2" style="background-color: #ec4899;"><input type="color" id="picker2" class="color-input-field" value="#ec4899"></div>
                 <input type="text" id="hex2" class="hex-input" value="#ec4899" aria-label="قيمة HEX للون الثاني" maxlength="7" spellcheck="false">
             </div>
@@ -80,10 +103,14 @@
                 <span class="value-badge" id="badgeRgb">RGB: <span id="resultRgb"></span></span>
             </div>
         </div>
+        </div>
+        </div>
         <section class="color-library" aria-labelledby="libraryTitle">
-            <div class="library-heading">
-                <div><h2 id="libraryTitle">مكتبة الألوان والدرجات</h2><p>اختر من أكثر من 100 درجة، أو ابحث بالاسم أو برمز HEX.</p></div>
-            </div>
+            <details class="library-details">
+                <summary class="library-heading library-summary">
+                    <div><h2 id="libraryTitle">مكتبة الألوان والدرجات</h2><p>اختر من 480 لونًا ودرجة من قائمة ويكيبيديا العربية، أو ابحث بالاسم أو برمز HEX.</p></div>
+                </summary>
+                <div class="library-content">
             <div class="target-picker" role="group" aria-label="اختر اللون الذي تريد تغييره">
                 <button type="button" class="target-button" data-target="1" aria-pressed="true">تغيير اللون الأول</button>
                 <button type="button" class="target-button" data-target="2" aria-pressed="false">تغيير اللون الثاني</button>
@@ -91,38 +118,494 @@
             <p class="library-hint">اضغط على أي درجة لإضافتها إلى اللون المحدد.</p>
             <input id="colorSearch" class="search-input" type="search" placeholder="ابحث عن لون، مثل: أزرق سماوي أو #87ceeb" aria-label="ابحث في مكتبة الألوان">
             <div class="color-grid" id="colorGrid" aria-live="polite"></div>
+        <p class="library-hint">مصدر أسماء الألوان وقيم HEX: <a href="https://ar.wikipedia.org/wiki/قائمة_الألوان" target="_blank" rel="noreferrer">قائمة الألوان في ويكيبيديا العربية</a> (CC BY-SA 4.0).</p>
+                </div>
+            </details>
         </section>
     </div>
 
     <script>
-        const COLORS = [
-            {n: "أحمر", h: "#ff0000"}, {n: "أحمر قرمزي", h: "#dc143c"}, {n: "أحمر ناري", h: "#b22222"}, {n: "أحمر داكن", h: "#8b0000"},
-            {n: "أحمر فاتح", h: "#ff6347"}, {n: "أحمر طوبي", h: "#cd5c5c"}, {n: "أحمر مرجاني", h: "#ff7f50"}, {n: "أحمر كرزي", h: "#de3163"},
-            {n: "أحمر خمري", h: "#800000"}, {n: "أحمر توتي", h: "#c2185b"}, {n: "أحمر قرميدي", h: "#e34234"}, {n: "أحمر مرّ", h: "#a52a2a"},
-            {n: "برتقالي", h: "#ffa500"}, {n: "برتقالي محروق", h: "#cc5500"}, {n: "برتقالي داكن", h: "#ff8c00"}, {n: "برتقالي فاتح", h: "#ffb347"},
-            {n: "مشمشي", h: "#fbceb1"}, {n: "خوخي", h: "#ffe5b4"}, {n: "مرجاني", h: "#ff7f50"}, {n: "نحاسي", h: "#b87333"},
-            {n: "أصفر", h: "#ffff00"}, {n: "أصفر ذهبي", h: "#ffd700"}, {n: "أصفر ليموني", h: "#fff44f"}, {n: "أصفر باهت", h: "#ffffe0"},
-            {n: "أصفر خردلي", h: "#ffdb58"}, {n: "أصفر كهرماني", h: "#ffbf00"}, {n: "أصفر قشدي", h: "#fffdd0"}, {n: "عاجي", h: "#fffff0"},
-            {n: "أخضر", h: "#008000"}, {n: "أخضر ليموني", h: "#32cd32"}, {n: "أخضر فاتح", h: "#90ee90"}, {n: "أخضر داكن", h: "#006400"},
-            {n: "أخضر غابي", h: "#228b22"}, {n: "أخضر زيتوني", h: "#808000"}, {n: "أخضر نعناعي", h: "#98ff98"}, {n: "أخضر زمردي", h: "#50c878"},
-            {n: "أخضر مريمي", h: "#9caf88"}, {n: "أخضر طحلبي", h: "#8a9a5b"}, {n: "أخضر تفاحي", h: "#8db600"}, {n: "أخضر بحري", h: "#2e8b57"},
-            {n: "فيروزي", h: "#40e0d0"}, {n: "فيروزي داكن", h: "#00ced1"}, {n: "أخضر مزرق", h: "#008b8b"}, {n: "نعناعي فاتح", h: "#aaf0d1"},
-            {n: "أزرق", h: "#0000ff"}, {n: "أزرق سماوي", h: "#87ceeb"}, {n: "أزرق فاتح", h: "#add8e6"}, {n: "أزرق داكن", h: "#00008b"},
-            {n: "أزرق ملكي", h: "#4169e1"}, {n: "أزرق بحري", h: "#000080"}, {n: "أزرق فولاذي", h: "#4682b4"}, {n: "أزرق سماوي فاتح", h: "#00bfff"},
-            {n: "أزرق نيلي", h: "#4b0082"}, {n: "أزرق كوبالت", h: "#0047ab"}, {n: "أزرق كهربائي", h: "#7df9ff"}, {n: "أزرق بترولي", h: "#006d77"},
-            {n: "أزرق ثلجي", h: "#e0ffff"}, {n: "أزرق غامق", h: "#191970"}, {n: "أزرق لازوردي", h: "#007fff"}, {n: "أزرق بنفسجي", h: "#8a2be2"},
-            {n: "بنفسجي", h: "#800080"}, {n: "بنفسجي فاتح", h: "#dda0dd"}, {n: "بنفسجي داكن", h: "#4b0082"}, {n: "بنفسجي مزرق", h: "#6a5acd"},
-            {n: "أرجواني", h: "#8b008b"}, {n: "أرجواني فاتح", h: "#ba55d3"}, {n: "ليلكي", h: "#c8a2c8"}, {n: "لافندر", h: "#e6e6fa"},
-            {n: "موف", h: "#e0b0ff"}, {n: "برقوقي", h: "#8e4585"}, {n: "نيلي", h: "#4b0082"}, {n: "أماثيست", h: "#9966cc"},
-            {n: "وردي", h: "#ffc0cb"}, {n: "وردي فاتح", h: "#ffb6c1"}, {n: "وردي داكن", h: "#ff1493"}, {n: "وردي ساخن", h: "#ff69b4"},
-            {n: "وردي مغبر", h: "#dcae96"}, {n: "وردي سلموني", h: "#fa8072"}, {n: "وردي فوشيا", h: "#ff00ff"}, {n: "وردي باستيل", h: "#f8c8dc"},
-            {n: "وردي بودري", h: "#f2d2bd"}, {n: "وردي توتي", h: "#c54b8c"}, {n: "وردي خوخي", h: "#ffdab9"}, {n: "وردي مرجاني", h: "#f88379"},
-            {n: "بني", h: "#a52a2a"}, {n: "بني فاتح", h: "#cd853f"}, {n: "بني داكن", h: "#654321"}, {n: "بني شوكولاتي", h: "#7b3f00"},
-            {n: "بني كستنائي", h: "#954535"}, {n: "بني رملي", h: "#f4a460"}, {n: "بني قهوي", h: "#6f4e37"}, {n: "بني كراميل", h: "#c68e17"},
-            {n: "بيج", h: "#f5f5dc"}, {n: "كاكي", h: "#c3b091"}, {n: "قمحي", h: "#f5deb3"}, {n: "تان", h: "#d2b48c"},
-            {n: "أبيض", h: "#ffffff"}, {n: "أبيض ثلجي", h: "#f0ffff"}, {n: "أبيض دخاني", h: "#f5f5f5"}, {n: "أسود", h: "#000000"},
-            {n: "رمادي", h: "#808080"}, {n: "رمادي فاتح", h: "#d3d3d3"}, {n: "رمادي داكن", h: "#a9a9a9"}, {n: "رمادي فحمي", h: "#36454f"},
-            {n: "رمادي فضي", h: "#c0c0c0"}, {n: "رمادي أردوازي", h: "#708090"}, {n: "رمادي دافئ", h: "#b8b0a5"}, {n: "رمادي بارد", h: "#a7b0b5"}
+                        const COLORS = [
+            {n: "أزرق جوي (سلاح الجو الملكي)", h: "#5d8aa8"},
+            {n: "أزرق جوي (القوات الجوية الأمريكية)", h: "#00308f"},
+            {n: "أزرق التفوق الجوي", h: "#72a0c1"},
+            {n: "قرمزي جامعة ألاباما", h: "#a32638"},
+            {n: "أزرق أليس", h: "#f0f8ff"},
+            {n: "قرمزي الأليزارين", h: "#e32636"},
+            {n: "برتقالي مُشاب", h: "#c46210"},
+            {n: "لوزي", h: "#efdecd"},
+            {n: "قطيفي", h: "#e52b50"},
+            {n: "زهري قطيفي", h: "#f19cbb"},
+            {n: "كهرماني", h: "#ffbf00"},
+            {n: "كهرماني (غمازات وسائل النقل)", h: "#ff7e00"},
+            {n: "وردي أمريكي", h: "#ff033e"},
+            {n: "جمشتي", h: "#9966cc"},
+            {n: "أخضر أندرويد", h: "#a4c639"},
+            {n: "أبيض مضاد للإشعاع", h: "#f2f3f4"},
+            {n: "نحاسي عتيق", h: "#cd9575"},
+            {n: "فوشيا عتيق", h: "#915c83"},
+            {n: "ياقوتي عتيق", h: "#841b2d"},
+            {n: "أبيض عتيق", h: "#faebd7"},
+            {n: "أخضر ياباني", h: "#008000"},
+            {n: "أخضر تفاحي", h: "#8db600"},
+            {n: "مشمشي", h: "#fbceb1"},
+            {n: "مائي", h: "#00ffff"},
+            {n: "زبرجدي", h: "#7fffd4"},
+            {n: "أخضر جيشي", h: "#4b5320"},
+            {n: "زرنيخي", h: "#3b444b"},
+            {n: "أصفر أريليد", h: "#e9d66b"},
+            {n: "رماد الأخشاب", h: "#b2beb5"},
+            {n: "هليوني", h: "#7ba05b"},
+            {n: "يوسفي ذري", h: "#ff9966"},
+            {n: "خرنوبي", h: "#a52a2a"},
+            {n: "أصفر الكوبالت", h: "#fdee00"},
+            {n: "معدني", h: "#6e7f80"},
+            {n: "لازوردي", h: "#007fff"},
+            {n: "لازوردي ضبابي(ويب)", h: "#f0ffff"},
+            {n: "أزرق طفولي", h: "#e0ffff"},
+            {n: "أزرق عينيّ الطفل", h: "#a1caf1"},
+            {n: "زهري طفولي", h: "#f4c2c2"},
+            {n: "أزرق كروي", h: "#21abcd"},
+            {n: "موزي مجنون", h: "#fae7b5"},
+            {n: "أصفر موزي", h: "#ffe135"},
+            {n: "أحمر الأبنية", h: "#7c0a02"},
+            {n: "رمادي البوارج", h: "#848482"},
+            {n: "وردي الأسواق", h: "#98777b"},
+            {n: "أزرق العاشقين", h: "#bcd4e6"},
+            {n: "قندسي", h: "#9f8170"},
+            {n: "صوفي", h: "#f5f5dc"},
+            {n: "ياقوتي مغمور", h: "#9c2542"},
+            {n: "حسائي", h: "#ffe4c4"},
+            {n: "صبغة خشب الزان", h: "#3d2b1f"},
+            {n: "Bittersweet", h: "#fe6f5e"},
+            {n: "Bittersweet shimmer", h: "#bf4f51"},
+            {n: "أسود", h: "#000000"},
+            {n: "أزرق", h: "#0000ff"},
+            {n: "أزرق (صبغة)", h: "#333399"},
+            {n: "أزرق (ح ص ز)", h: "#0247fe"},
+            {n: "أخضر مزرق", h: "#00dddd"},
+            {n: "بنفسجي مزرق", h: "#8a2be2"},
+            {n: "لحائي (لون لحاء الشجر)", h: "#79443b"},
+            {n: "أزرق بونديّ", h: "#0095b6"},
+            {n: "أزرق جامعة براندايس", h: "#0070ff"},
+            {n: "نحاسي أصفر", h: "#b5a642"},
+            {n: "أخضر مضيء", h: "#66ff00"},
+            {n: "وردي مضيء", h: "#ff007f"},
+            {n: "فيروزي مضيء", h: "#08e8de"},
+            {n: "Brilliant rose", h: "#ff55a3"},
+            {n: "Brink Pink", h: "#fb607f"},
+            {n: "أخضرُ سباقيٌّ بريطانيّ", h: "#004225"},
+            {n: "برونزي", h: "#cd7f32"},
+            {n: "بني", h: "#993300"},
+            {n: "جلدي الجاموس", h: "#f0dc82"},
+            {n: "بورغندي", h: "#9f1d35"},
+            {n: "برتقالي محروق", h: "#cc5500"},
+            {n: "تُرْبي محروق", h: "#e97451"},
+            {n: "أومبرياويّ محروق", h: "#8a3324"},
+            {n: "بيزنطي", h: "#702963"},
+            {n: "أزرق جامعة كامبريدج", h: "#a3c1ad"},
+            {n: "أخضر تمويهيّ", h: "#78866b"},
+            {n: "رأسيّ الموت", h: "#592720"},
+            {n: "كاردينالي", h: "#c41e3a"},
+            {n: "كارمن", h: "#960018"},
+            {n: "زهري كارمن", h: "#eb4c42"},
+            {n: "زهري القرنفل", h: "#ffa6c9"},
+            {n: "أحمر عقيقي", h: "#b31b1b"},
+            {n: "أزرق جامعة كارولينا", h: "#99badd"},
+            {n: "برتقالي الجزر", h: "#ed9121"},
+            {n: "Celadon", h: "#ace1af"},
+            {n: "كرزي", h: "#de3163"},
+            {n: "زهري الكرز", h: "#ec3b83"},
+            {n: "سيروليان", h: "#007ba7"},
+            {n: "أزرق سيروليان", h: "#2a52be"},
+            {n: "شامباني", h: "#f7e7ce"},
+            {n: "فحمي", h: "#36454f"},
+            {n: "كرتوزي (تقليدي)", h: "#dfff00"},
+            {n: "كرتوزي (وب)", h: "#7fff00"},
+            {n: "زهري إزهار الكرز", h: "#ffb7c5"},
+            {n: "قسطلي", h: "#cd5c5c"},
+            {n: "شوكولاتيّ (تقليدي)", h: "#7b3f00"},
+            {n: "زنجفري", h: "#e34234"},
+            {n: "قرْفِيّ", h: "#d2691e"},
+            {n: "كوبالتي", h: "#0047ab"},
+            {n: "أزرق جامعة كولومبيا", h: "#9bddff"},
+            {n: "نحاسي", h: "#b87333"},
+            {n: "وردي نحاسي", h: "#996666"},
+            {n: "مرجاني", h: "#ff7f50"},
+            {n: "زهري مرجاني", h: "#f88379"},
+            {n: "أحمر مرجاني", h: "#ff4040"},
+            {n: "قرطبي", h: "#893f45"},
+            {n: "ذُرَوِيّ", h: "#fbec5d"},
+            {n: "قنطريوني", h: "#6495ed"},
+            {n: "لاتيهي كَونيّ", h: "#fff8e7"},
+            {n: "قشدي", h: "#fffdd0"},
+            {n: "قرمزي", h: "#dc143c"},
+            {n: "سيان", h: "#00ffff"},
+            {n: "سيان (طباعي)", h: "#00b7eb"},
+            {n: "أزرق", h: "#00008b"},
+            {n: "بني", h: "#654321"},
+            {n: "سيرولين", h: "#08457e"},
+            {n: "كستنائي", h: "#986960"},
+            {n: "مرجاني", h: "#cd5b45"},
+            {n: "Dark goldenrod [لغات أخرى]‏", h: "#b8860b"},
+            {n: "درجات الأخضر", h: "#013220"},
+            {n: "خاكي", h: "#bdb76b"},
+            {n: "درجات الماجنتي", h: "#8b008b"},
+            {n: "درجات الأخضر", h: "#03c03c"},
+            {n: "وردي غامق", h: "#e75480"},
+            {n: "سقلاتي", h: "#560319"},
+            {n: "سلموني", h: "#e9967a"},
+            {n: "Dark slate gray [لغات أخرى]‏", h: "#2f4f4f"},
+            {n: "أخضر ربيعي", h: "#177245"},
+            {n: "Dark tan [لغات أخرى]‏", h: "#918151"},
+            {n: "فيروزي", h: "#00ced1"},
+            {n: "بنفسجي", h: "#9400d3"},
+            {n: "Davy\u0027s grey", h: "#555555"},
+            {n: "كارمن", h: "#ef3038"},
+            {n: "كرزي", h: "#da3287"},
+            {n: "كستنائي", h: "#b94e48"},
+            {n: "فوشي", h: "#c154c1"},
+            {n: "ليلكي", h: "#9955bb"},
+            {n: "ماجنتي", h: "#cd00cc"},
+            {n: "خوخي", h: "#ffcba4"},
+            {n: "درجات الزهري", h: "#ff1493"},
+            {n: "زعفران", h: "#ff9933"},
+            {n: "نيلي (لون)", h: "#1560bd"},
+            {n: "رمال [لغات أخرى]‏", h: "#edc9af"},
+            {n: "أزرق فريق دودجر", h: "#1e90ff"},
+            {n: "Duke blue", h: "#00009c"},
+            {n: "Ecru", h: "#c2b280"},
+            {n: "أزرق مصري", h: "#1034a6"},
+            {n: "الباذنجاني (لون)", h: "#614051"},
+            {n: "أزرق كهربائي", h: "#7df9ff"},
+            {n: "درجات الأخضر", h: "#00ff00"},
+            {n: "نيلي", h: "#6600ff"},
+            {n: "ليمي", h: "#ccff00"},
+            {n: "أرجواني", h: "#bf00ff"},
+            {n: "درجات الأخضر", h: "#50c878"},
+            {n: "Fallow", h: "#c19a6b"},
+            {n: "أحمر الفالون", h: "#801818"},
+            {n: "درجات الأخضر", h: "#4d5d53"},
+            {n: "درجات الأخضر", h: "#4f7942"},
+            {n: "طوب حراري", h: "#b22222"},
+            {n: "أحمر مطفئة الحريق", h: "#ce2029"},
+            {n: "Flax", h: "#eedc82"},
+            {n: "درجات الأخضر", h: "#228b22"},
+            {n: "وردي", h: "#f64a8a"},
+            {n: "فوشيا", h: "#ff00ff"},
+            {n: "فوشي", h: "#ff77ff"},
+            {n: "جمبوج", h: "#e49b0f"},
+            {n: "ذهبي", h: "#d4af37"},
+            {n: "ذهبي (لون)", h: "#ffd700"},
+            {n: "ذهبي", h: "#996515"},
+            {n: "ذهبي", h: "#fcc200"},
+            {n: "ذهبي", h: "#ffdf00"},
+            {n: "Goldenrod", h: "#daa520"},
+            {n: "رمادي", h: "#bebebe"},
+            {n: "درجات الأخضر [هل يوثق بهذا المصدر؟]", h: "#465945"},
+            {n: "أخضر", h: "#008000"},
+            {n: "درجات الأخضر", h: "#00a550"},
+            {n: "النموذج اللوني أحمر أصفر أزرق", h: "#66b032"},
+            {n: "درجات الأخضر", h: "#adff2f"},
+            {n: "Han Blue", h: "#5218fa"},
+            {n: "Han Purple", h: "#5218fa"},
+            {n: "درجات الأخضر", h: "#3fff00"},
+            {n: "بنفسجي رقيب الشمس", h: "#df73ff"},
+            {n: "كرزي", h: "#f400a1"},
+            {n: "درجات الماجنتي", h: "#ff00cc"},
+            {n: "درجات الزهري", h: "#ff69b4"},
+            {n: "درجات الأخضر", h: "#355e3b"},
+            {n: "درجات الأخضر", h: "#138808"},
+            {n: "نيلي", h: "#00416a"},
+            {n: "نيلي", h: "#4b0082"},
+            {n: "International Klein Blue", h: "#002fa7"},
+            {n: "برتقالي دولي [لغات أخرى]‏", h: "#ff4f00"},
+            {n: "درجات الأخضر", h: "#009000"},
+            {n: "أبيض عاجي [لغات أخرى]‏", h: "#fffff0"},
+            {n: "Jade", h: "#00a86b"},
+            {n: "Jungle green", h: "#29ab87"},
+            {n: "درجات الأخضر", h: "#4cbb17"},
+            {n: "خاكي", h: "#c3b091"},
+            {n: "خاكي", h: "#f0e68c"},
+            {n: "بركاني [لغات أخرى]‏", h: "#cf1020"},
+            {n: "خزامي", h: "#b57edc"},
+            {n: "خزامي (لون)", h: "#e6e6fa"},
+            {n: "خزامي", h: "#ccccff"},
+            {n: "خزامي", h: "#fff0f5"},
+            {n: "خزامي", h: "#c4c3d0"},
+            {n: "خزامي", h: "#9457eb"},
+            {n: "خزامي", h: "#ee82ee"},
+            {n: "خزامي", h: "#fbaed2"},
+            {n: "خزامي", h: "#967bb6"},
+            {n: "خزامي", h: "#fba0e3"},
+            {n: "Lawn green [لغات أخرى]‏", h: "#7cfc00"},
+            {n: "ليمون [لغات أخرى]‏", h: "#fde910"},
+            {n: "Lemon chiffon [لغات أخرى]‏", h: "#fffacd"},
+            {n: "أزرق", h: "#add8e6"},
+            {n: "زهري", h: "#ffb6c1"},
+            {n: "وردي", h: "#e68fac"},
+            {n: "ليلكي (لون)", h: "#c8a2c8"},
+            {n: "Lime (color wheel)", h: "#bfff00"},
+            {n: "ليمي", h: "#00ff00"},
+            {n: "ليمي", h: "#32cd32"},
+            {n: "Linen", h: "#faf0e6"},
+            {n: "Liver", h: "#534b4f"},
+            {n: "ماجنتا", h: "#ff00ff"},
+            {n: "ماجنتي", h: "#ca1f7b"},
+            {n: "ماجنتا (طباعي)", h: "#ff0090"},
+            {n: "أخضر ربيعي", h: "#aaf0d1"},
+            {n: "Magnolia", h: "#f8f4ff"},
+            {n: "Mahogany", h: "#c04000"},
+            {n: "Maize", h: "#fbec5d"},
+            {n: "أزرق ماجوريل", h: "#6050dc"},
+            {n: "مالاكايت", h: "#0bda51"},
+            {n: "كستنائي", h: "#800000"},
+            {n: "كستنائي (لون)", h: "#b03060"},
+            {n: "خبازي (لون)", h: "#e0b0ff"},
+            {n: "طوبينيّ خُبّازي", h: "#915f6d"},
+            {n: "مايا بلو [لغات أخرى]‏", h: "#73c2fb"},
+            {n: "درجات الأزرق", h: "#0000cd"},
+            {n: "كارمن", h: "#af4035"},
+            {n: "خزامي", h: "#cc99cc"},
+            {n: "أرجواني", h: "#9370db"},
+            {n: "أخضر ربيعي", h: "#00fa9a"},
+            {n: "Medium taupe [لغات أخرى]‏", h: "#674c47"},
+            {n: "أزرق منتصف الليل", h: "#191970"},
+            {n: "درجات الأخضر", h: "#004953"},
+            {n: "أخضر ربيعي", h: "#98ff98"},
+            {n: "وردي", h: "#ffe4e1"},
+            {n: "درجات الأخضر", h: "#addfad"},
+            {n: "زهري مونتباتن", h: "#997a8d"},
+            {n: "خردلي", h: "#ffdb58"},
+            {n: "آسي", h: "#21421e"},
+            {n: "درجات الأخضر", h: "#006633"},
+            {n: "نافاجو أبيض [لغات أخرى]‏", h: "#ffdead"},
+            {n: "كحلي (لون)", h: "#000080"},
+            {n: "مغرة", h: "#cc7722"},
+            {n: "درجات الأخضر", h: "#008000"},
+            {n: "ذهبي عتيق", h: "#cfb53b"},
+            {n: "Old Lace [لغات أخرى]‏", h: "#fdf5e6"},
+            {n: "خزامي (لون)", h: "#796878"},
+            {n: "وردي", h: "#c08081"},
+            {n: "أخضر مصفر [لغات أخرى]‏", h: "#808000"},
+            {n: "أخضر مصفر [لغات أخرى]‏", h: "#6b8e23"},
+            {n: "أوليفين", h: "#9ab973"},
+            {n: "برتقالي", h: "#ff7f00"},
+            {n: "النموذج اللوني أحمر أصفر أزرق", h: "#fb9902"},
+            {n: "برتقالي", h: "#ffa500"},
+            {n: "برتقالي", h: "#ffa000"},
+            {n: "أحمر برتقالي", h: "#ff4500"},
+            {n: "سحلبي (لون)", h: "#da70d6"},
+            {n: "درجات الأزرق", h: "#afeeee"},
+            {n: "بني", h: "#987654"},
+            {n: "كارمن (لون)", h: "#af4035"},
+            {n: "كستنائي (لون)", h: "#ddadaf"},
+            {n: "Pale cornflower blue", h: "#abcdef"},
+            {n: "درجات الماجنتي", h: "#f984e5"},
+            {n: "درجات الزهري", h: "#fadadd"},
+            {n: "بنفسجي محمر", h: "#db7093"},
+            {n: "Pale taupe", h: "#bc987e"},
+            {n: "خوخي", h: "#ffefd5"},
+            {n: "أخضر", h: "#77dd77"},
+            {n: "زهري (لون)", h: "#ffd1dc"},
+            {n: "Payne\u0027s grey", h: "#40404f"},
+            {n: "خوخي (لون)", h: "#ffe5b4"},
+            {n: "خوخي", h: "#ffcc99"},
+            {n: "خوخي", h: "#fadfad"},
+            {n: "أخضر مصفر [لغات أخرى]‏", h: "#d1e231"},
+            {n: "بريونكل (لون)", h: "#c3cde6"},
+            {n: "أزرق فارسي", h: "#1c39bb"},
+            {n: "درجات الأخضر", h: "#00a693"},
+            {n: "أزرق فارسي", h: "#32127a"},
+            {n: "درجات البرتقالي", h: "#d99058"},
+            {n: "أحمر فارسي", h: "#cc3333"},
+            {n: "وردي", h: "#f77fbe"},
+            {n: "وردي", h: "#fe28a2"},
+            {n: "كاكي", h: "#ec5800"},
+            {n: "درجات الأخضر", h: "#01796f"},
+            {n: "زهري", h: "#ffc0cb"},
+            {n: "خوخي (لون)", h: "#ff9966"},
+            {n: "بلاتين", h: "#e5e4e2"},
+            {n: "Portland Orange", h: "#ff5a36"},
+            {n: "أزرق مسحوقي", h: "#b0e0e6"},
+            {n: "برغوثي", h: "#cc8899"},
+            {n: "أزرق بروسيا", h: "#003153"},
+            {n: "أرجواني", h: "#dd00ff"},
+            {n: "درجات البرتقالي", h: "#ff7518"},
+            {n: "أرجواني", h: "#7f007f"},
+            {n: "أرجواني", h: "#a020f0"},
+            {n: "Purple Taupe", h: "#50404d"},
+            {n: "أحمر عليقي", h: "#e30b5c"},
+            {n: "Raw umber [لغات أخرى]‏", h: "#734a12"},
+            {n: "وردي", h: "#e3256b"},
+            {n: "أحمر", h: "#ff0000"},
+            {n: "درجات الأحمر", h: "#ed1c24"},
+            {n: "النموذج اللوني أحمر أصفر أزرق", h: "#fe2712"},
+            {n: "أحمر بنفسجي", h: "#c71585"},
+            {n: "كارمن", h: "#d70040"},
+            {n: "Robin egg blue", h: "#00cccc"},
+            {n: "Rose", h: "#ff007f"},
+            {n: "زهري الفوة", h: "#e32636"},
+            {n: "وردي", h: "#ff66cc"},
+            {n: "وردي", h: "#aa98a9"},
+            {n: "Rose Taupe", h: "#905d5d"},
+            {n: "أزرق ملكي", h: "#4169e1"},
+            {n: "أرجواني", h: "#6b3fa0"},
+            {n: "ياقوتي", h: "#e0115f"},
+            {n: "Russet", h: "#80461b"},
+            {n: "صدئي", h: "#b7410e"},
+            {n: "Safety orange (blaze orange) [لغات أخرى]‏", h: "#ff6600"},
+            {n: "زعفران (لون)", h: "#f4c430"},
+            {n: "سلموني (لون)", h: "#ff8c69"},
+            {n: "سلموني (لون)", h: "#ff91a4"},
+            {n: "Sandy brown", h: "#f4a460"},
+            {n: "عنابي", h: "#92000a"},
+            {n: "ياقوتي أزرق", h: "#082567"},
+            {n: "سقلاتي", h: "#ff2400"},
+            {n: "حافلة مدرسية صفراء", h: "#ffd800"},
+            {n: "درجات الأخضر", h: "#2e8b57"},
+            {n: "البني الفقمي", h: "#321414"},
+            {n: "Seashell", h: "#fff5ee"},
+            {n: "Selective yellow", h: "#ffba00"},
+            {n: "اللون البني الداكن", h: "#704214"},
+            {n: "درجات الأخضر", h: "#009e60"},
+            {n: "درجات الزهري", h: "#fc0fc0"},
+            {n: "Sienna", h: "#a0522d"},
+            {n: "فضي", h: "#c0c0c0"},
+            {n: "لازوردي", h: "#87ceeb"},
+            {n: "Slate gray", h: "#708090"},
+            {n: "أزرق مسحوقي", h: "#003399"},
+            {n: "Spring bud", h: "#a7fc00"},
+            {n: "Spring green", h: "#00ff7f"},
+            {n: "أزرق صلب [لغات أخرى]‏", h: "#4682b4"},
+            {n: "حنطي", h: "#d2b48c"},
+            {n: "Tangerine", h: "#f28500"},
+            {n: "حافلة مدرسية صفراء", h: "#ffcc00"},
+            {n: "رمادي داكن", h: "#483c32"},
+            {n: "Taupe gray", h: "#8b8589"},
+            {n: "أخضر الشاي", h: "#d0f0c0"},
+            {n: "درجات البرتقالي", h: "#f88379"},
+            {n: "وردي", h: "#f4c2c2"},
+            {n: "حذفي", h: "#008080"},
+            {n: "Tenné (Tawny) [لغات أخرى]‏", h: "#cd5700"},
+            {n: "فخاري", h: "#e2725b"},
+            {n: "أرجواني", h: "#d8bfd8"},
+            {n: "وردي", h: "#de6fa1"},
+            {n: "طماطمي", h: "#ff6347"},
+            {n: "فيروزي", h: "#30d5c8"},
+            {n: "أرجوان صور", h: "#66023c"},
+            {n: "صبغة اللازورد", h: "#120a8f"},
+            {n: "درجات الماجنتي", h: "#ff6fff"},
+            {n: "لازوردي", h: "#5b92e5"},
+            {n: "Upsdell red", h: "#ae2029"},
+            {n: "ذهبي", h: "#c5b358"},
+            {n: "أحمر بندقي", h: "#c80815"},
+            {n: "بنفسجي", h: "#8000ff"},
+            {n: "بنفسجي", h: "#ee82ee"},
+            {n: "Violet (RYB)", h: "#8601af"},
+            {n: "Viridian", h: "#40826d"},
+            {n: "قمحي (لون)", h: "#f5deb3"},
+            {n: "أبيض", h: "#ffffff"},
+            {n: "خزامي (لون)", h: "#c9a0dc"},
+            {n: "Xanadu", h: "#738678"},
+            {n: "أزرق جامعة ييل", h: "#0f4d92"},
+            {n: "أصفر", h: "#ffff00"},
+            {n: "أصفر", h: "#ffef00"},
+            {n: "Yellow (RYB)", h: "#fefe33"},
+            {n: "أصفر مخضر [لغات أخرى]‏", h: "#9acd32"},
+            {n: "أحمر قرمزي", h: "#dc143c"},
+            {n: "أحمر ناري", h: "#b22222"},
+            {n: "أحمر داكن", h: "#8b0000"},
+            {n: "أحمر فاتح", h: "#ff6347"},
+            {n: "أحمر طوبي", h: "#cd5c5c"},
+            {n: "أحمر مرجاني", h: "#ff7f50"},
+            {n: "أحمر كرزي", h: "#de3163"},
+            {n: "أحمر خمري", h: "#800000"},
+            {n: "أحمر توتي", h: "#c2185b"},
+            {n: "أحمر قرميدي", h: "#e34234"},
+            {n: "أحمر مرّ", h: "#a52a2a"},
+            {n: "برتقالي داكن", h: "#ff8c00"},
+            {n: "برتقالي فاتح", h: "#ffb347"},
+            {n: "خوخي", h: "#ffe5b4"},
+            {n: "أصفر ذهبي", h: "#ffd700"},
+            {n: "أصفر ليموني", h: "#fff44f"},
+            {n: "أصفر باهت", h: "#ffffe0"},
+            {n: "أصفر خردلي", h: "#ffdb58"},
+            {n: "أصفر كهرماني", h: "#ffbf00"},
+            {n: "أصفر قشدي", h: "#fffdd0"},
+            {n: "عاجي", h: "#fffff0"},
+            {n: "أخضر ليموني", h: "#32cd32"},
+            {n: "أخضر فاتح", h: "#90ee90"},
+            {n: "أخضر داكن", h: "#006400"},
+            {n: "أخضر غابي", h: "#228b22"},
+            {n: "أخضر زيتوني", h: "#808000"},
+            {n: "أخضر نعناعي", h: "#98ff98"},
+            {n: "أخضر زمردي", h: "#50c878"},
+            {n: "أخضر مريمي", h: "#9caf88"},
+            {n: "أخضر طحلبي", h: "#8a9a5b"},
+            {n: "أخضر بحري", h: "#2e8b57"},
+            {n: "فيروزي", h: "#40e0d0"},
+            {n: "فيروزي داكن", h: "#00ced1"},
+            {n: "أخضر مزرق", h: "#008b8b"},
+            {n: "نعناعي فاتح", h: "#aaf0d1"},
+            {n: "أزرق سماوي", h: "#87ceeb"},
+            {n: "أزرق فاتح", h: "#add8e6"},
+            {n: "أزرق داكن", h: "#00008b"},
+            {n: "أزرق بحري", h: "#000080"},
+            {n: "أزرق فولاذي", h: "#4682b4"},
+            {n: "أزرق سماوي فاتح", h: "#00bfff"},
+            {n: "أزرق نيلي", h: "#4b0082"},
+            {n: "أزرق كوبالت", h: "#0047ab"},
+            {n: "أزرق بترولي", h: "#006d77"},
+            {n: "أزرق ثلجي", h: "#e0ffff"},
+            {n: "أزرق غامق", h: "#191970"},
+            {n: "أزرق لازوردي", h: "#007fff"},
+            {n: "أزرق بنفسجي", h: "#8a2be2"},
+            {n: "بنفسجي", h: "#800080"},
+            {n: "بنفسجي فاتح", h: "#dda0dd"},
+            {n: "بنفسجي داكن", h: "#4b0082"},
+            {n: "بنفسجي مزرق", h: "#6a5acd"},
+            {n: "أرجواني", h: "#8b008b"},
+            {n: "أرجواني فاتح", h: "#ba55d3"},
+            {n: "ليلكي", h: "#c8a2c8"},
+            {n: "لافندر", h: "#e6e6fa"},
+            {n: "موف", h: "#e0b0ff"},
+            {n: "برقوقي", h: "#8e4585"},
+            {n: "أماثيست", h: "#9966cc"},
+            {n: "وردي", h: "#ffc0cb"},
+            {n: "وردي فاتح", h: "#ffb6c1"},
+            {n: "وردي داكن", h: "#ff1493"},
+            {n: "وردي ساخن", h: "#ff69b4"},
+            {n: "وردي مغبر", h: "#dcae96"},
+            {n: "وردي سلموني", h: "#fa8072"},
+            {n: "وردي فوشيا", h: "#ff00ff"},
+            {n: "وردي باستيل", h: "#f8c8dc"},
+            {n: "وردي بودري", h: "#f2d2bd"},
+            {n: "وردي توتي", h: "#c54b8c"},
+            {n: "وردي خوخي", h: "#ffdab9"},
+            {n: "وردي مرجاني", h: "#f88379"},
+            {n: "بني", h: "#a52a2a"},
+            {n: "بني فاتح", h: "#cd853f"},
+            {n: "بني داكن", h: "#654321"},
+            {n: "بني شوكولاتي", h: "#7b3f00"},
+            {n: "بني كستنائي", h: "#954535"},
+            {n: "بني رملي", h: "#f4a460"},
+            {n: "بني قهوي", h: "#6f4e37"},
+            {n: "بني كراميل", h: "#c68e17"},
+            {n: "بيج", h: "#f5f5dc"},
+            {n: "كاكي", h: "#c3b091"},
+            {n: "قمحي", h: "#f5deb3"},
+            {n: "تان", h: "#d2b48c"},
+            {n: "أبيض ثلجي", h: "#f0ffff"},
+            {n: "أبيض دخاني", h: "#f5f5f5"},
+            {n: "رمادي", h: "#808080"},
+            {n: "رمادي فاتح", h: "#d3d3d3"},
+            {n: "رمادي داكن", h: "#a9a9a9"},
+            {n: "رمادي فحمي", h: "#36454f"},
+            {n: "رمادي فضي", h: "#c0c0c0"},
+            {n: "رمادي أردوازي", h: "#708090"},
+            {n: "رمادي دافئ", h: "#b8b0a5"},
+            {n: "رمادي بارد", h: "#a7b0b5"}
         ];
 
         const picker1 = document.getElementById("picker1");
@@ -130,6 +613,8 @@
         const hex1 = document.getElementById("hex1");
         const hex2 = document.getElementById("hex2");
         const preview1 = document.getElementById("preview1");
+        const colorLabelName1 = document.getElementById("colorName1");
+        const colorLabelName2 = document.getElementById("colorName2");
         const preview2 = document.getElementById("preview2");
         const resultPreview = document.getElementById("resultPreview");
         const resultHex = document.getElementById("resultHex");
@@ -137,6 +622,42 @@
         const colorNameText = document.getElementById("colorNameText");
         const colorGrid = document.getElementById("colorGrid");
         const colorSearch = document.getElementById("colorSearch");
+        const previewDock = document.getElementById("previewDock");
+        const previewDockSpace = document.getElementById("previewDockSpace");
+        let isDockCompact = false;
+        function animateDockChange(previousRect) {
+            if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+            const nextRect = previewDock.getBoundingClientRect();
+            const scaleX = previousRect.width / nextRect.width;
+            const scaleY = previousRect.height / nextRect.height;
+            const offsetX = previousRect.left - nextRect.left;
+            const offsetY = previousRect.top - nextRect.top;
+            const finalTransform = getComputedStyle(previewDock).transform;
+            const baseTransform = finalTransform === "none" ? "" : `${finalTransform} `;
+            previewDock.animate([
+                { transformOrigin: "top left", transform: `translate(${offsetX}px, ${offsetY}px) scale(${scaleX}, ${scaleY}) ${baseTransform}` },
+                { transformOrigin: "top left", transform: finalTransform }
+            ], { duration: 320, easing: "cubic-bezier(0.2, 0.75, 0.25, 1)" });
+        }
+        window.addEventListener("scroll", () => {
+            if (!isDockCompact && window.scrollY > 180) {
+                isDockCompact = true;
+                const previousRect = previewDock.getBoundingClientRect();
+                previewDockSpace.style.height = `${previewDockSpace.getBoundingClientRect().height}px`;
+                document.body.append(previewDock);
+                previewDock.classList.add("is-compact");
+                animateDockChange(previousRect);
+            } else if (isDockCompact && window.scrollY < 100) {
+                isDockCompact = false;
+                const previousRect = previewDock.getBoundingClientRect();
+                previewDock.classList.remove("is-compact");
+                previewDockSpace.insertBefore(previewDock, previewDockSpace.firstChild);
+                animateDockChange(previousRect);
+                window.setTimeout(() => {
+                    if (!isDockCompact) previewDockSpace.style.height = "";
+                }, 300);
+            }
+        }, {passive: true});
         let selectedTarget = 1;
 
         function hexToRgb(h) {
@@ -180,7 +701,12 @@
             resultPreview.style.backgroundColor = hex;
             resultHex.innerText = hex;
             resultRgb.innerText = `rgb(${res.r}, ${res.g}, ${res.b})`;
+            colorLabelName1.innerText = getClosestColorName(picker1.value);
+            colorLabelName1.style.color = picker1.value;
+            colorLabelName2.innerText = getClosestColorName(picker2.value);
+            colorLabelName2.style.color = picker2.value;
             colorNameText.innerText = getClosestColorName(hex);
+            colorNameText.style.color = hex;
         }
 
         function renderColors() {
@@ -206,6 +732,9 @@
                     const picker = selectedTarget === 1 ? picker1 : picker2;
                     picker.value = color.h;
                     update();
+                    selectedTarget = selectedTarget === 1 ? 2 : 1;
+                    document.querySelectorAll(".target-button").forEach(target => target.setAttribute("aria-pressed", String(Number(target.dataset.target) === selectedTarget)));
+                    renderColors();
                 });
                 colorGrid.append(button);
             });
