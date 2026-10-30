@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مختبر دمج الألوان التفاعلي</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --card-bg: rgba(30, 41, 59, 0.7);
+            --card-border: rgba(255, 255, 255, 0.1);
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --accent: #6366f1;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; }
+        body { background-color: var(--bg-color); color: var(--text-primary); min-height: 100vh; display: flex; justify-content: center; align-items: flex-start; padding: 32px 20px; }
+        .container { width: 100%; max-width: 1100px; background: var(--card-bg); backdrop-filter: blur(16px); border: 1px solid var(--card-border); border-radius: 24px; padding: 32px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5); }
+        header { text-align: center; margin-bottom: 32px; }
+        header h1 { font-size: 2.2rem; font-weight: 900; margin-bottom: 8px; background: linear-gradient(135deg, #a5b4fc, #f472b6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        header p { color: var(--text-secondary); }
+        .mix-section { display: grid; grid-template-columns: 1fr auto 1fr; gap: 20px; align-items: center; margin-bottom: 32px; }
+        .color-card { background: rgba(15, 23, 42, 0.6); border: 1px solid var(--card-border); border-radius: 16px; padding: 20px; display: flex; flex-direction: column; align-items: center; gap: 16px; }
+        .color-preview { width: 100%; height: 120px; border-radius: 12px; border: 2px solid rgba(255, 255, 255, 0.1); cursor: pointer; position: relative; overflow: hidden; }
+        .color-input-field { opacity: 0; position: absolute; top: 0; left: 0; width: 100%; height: 100%; cursor: pointer; }
+        .hex-input { width: 100%; background: #0f172a; border: 1px solid var(--card-border); border-radius: 8px; padding: 8px 12px; color: var(--text-primary); text-align: center; outline: none; }
+        .hex-input[aria-invalid="true"] { border-color: #fb7185; }
+        .result-section { background: rgba(15, 23, 42, 0.8); border: 1px solid var(--card-border); border-radius: 20px; padding: 24px; text-align: center; }
+        .result-title { font-size: 1.25rem; font-weight: 700; color: var(--text-primary); margin-bottom: 16px; }
+        .color-name-highlight { color: #f472b6; font-size: 1.5rem; font-weight: 900; }
+        .result-preview { width: 100%; height: 160px; border-radius: 16px; margin: 16px 0; transition: background-color 0.3s ease; }
+        .value-badge { background: rgba(255, 255, 255, 0.08); padding: 8px 16px; border-radius: 10px; font-family: monospace; cursor: pointer; display: inline-block; margin: 5px; }
+        .color-library { margin-top: 32px; }
+        .library-heading { display: flex; justify-content: space-between; align-items: end; gap: 16px; margin-bottom: 16px; }
+        .library-heading p, .library-hint { color: var(--text-secondary); font-size: 0.95rem; }
+        .target-picker { display: flex; gap: 8px; margin: 14px 0; }
+        .target-button, .search-input { background: #0f172a; border: 1px solid var(--card-border); border-radius: 10px; color: var(--text-primary); padding: 10px 14px; }
+        .target-button { cursor: pointer; }
+        .target-button[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); }
+        .search-input { width: 100%; outline: none; }
+        .color-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(112px, 1fr)); gap: 10px; margin-top: 16px; }
+        .color-option { background: rgba(15, 23, 42, 0.6); border: 1px solid var(--card-border); border-radius: 12px; color: var(--text-primary); padding: 8px; cursor: pointer; text-align: right; transition: transform 0.15s ease, border-color 0.15s ease; }
+        .color-option:hover, .color-option:focus-visible { transform: translateY(-2px); border-color: rgba(255, 255, 255, 0.45); outline: none; }
+        .swatch { display: block; height: 48px; border-radius: 7px; margin-bottom: 7px; border: 1px solid rgba(255, 255, 255, 0.15); }
+        .swatch-name, .swatch-hex { display: block; }
+        .swatch-name { font-weight: 700; }
+        .swatch-hex { color: var(--text-secondary); font-size: 0.78rem; font-family: monospace; direction: ltr; text-align: right; }
+        .empty-results { color: var(--text-secondary); padding: 18px 0; }
+        @media (max-width: 600px) {
+            body { padding: 14px; }
+            .container { padding: 20px 16px; }
+            .mix-section { grid-template-columns: 1fr; gap: 12px; }
+            .mix-section > div:nth-child(2) { text-align: center; }
+            .library-heading { align-items: flex-start; flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header><h1>مختبر دمج الألوان</h1><p>اكتشف درجات الألوان وامزجها واحصل على أقرب اسم للنتيجة.</p></header>
+        <div class="mix-section">
+            <div class="color-card">
+                <h3>اللون الأول</h3>
+                <div class="color-preview" id="preview1" style="background-color: #3b82f6;"><input type="color" id="picker1" class="color-input-field" value="#3b82f6"></div>
+                <input type="text" id="hex1" class="hex-input" value="#3b82f6" aria-label="قيمة HEX للون الأول" maxlength="7" spellcheck="false">
+            </div>
+            <div style="font-size: 2rem;">+</div>
+            <div class="color-card">
+                <h3>اللون الثاني</h3>
+                <div class="color-preview" id="preview2" style="background-color: #ec4899;"><input type="color" id="picker2" class="color-input-field" value="#ec4899"></div>
+                <input type="text" id="hex2" class="hex-input" value="#ec4899" aria-label="قيمة HEX للون الثاني" maxlength="7" spellcheck="false">
+            </div>
+        </div>
+        <div class="result-section">
+            <div class="result-title">النتيجة المدموجة: <span id="colorNameText" class="color-name-highlight">جاري الحساب...</span></div>
+            <div class="result-preview" id="resultPreview"></div>
+            <div>
+                <span class="value-badge" id="badgeHex">HEX: <span id="resultHex"></span></span>
+                <span class="value-badge" id="badgeRgb">RGB: <span id="resultRgb"></span></span>
+            </div>
+        </div>
+        <section class="color-library" aria-labelledby="libraryTitle">
+            <div class="library-heading">
+                <div><h2 id="libraryTitle">مكتبة الألوان والدرجات</h2><p>اختر من أكثر من 100 درجة، أو ابحث بالاسم أو برمز HEX.</p></div>
+            </div>
+            <div class="target-picker" role="group" aria-label="اختر اللون الذي تريد تغييره">
+                <button type="button" class="target-button" data-target="1" aria-pressed="true">تغيير اللون الأول</button>
+                <button type="button" class="target-button" data-target="2" aria-pressed="false">تغيير اللون الثاني</button>
+            </div>
+            <p class="library-hint">اضغط على أي درجة لإضافتها إلى اللون المحدد.</p>
+            <input id="colorSearch" class="search-input" type="search" placeholder="ابحث عن لون، مثل: أزرق سماوي أو #87ceeb" aria-label="ابحث في مكتبة الألوان">
+            <div class="color-grid" id="colorGrid" aria-live="polite"></div>
+        </section>
+    </div>
+
+    <script>
+        const COLORS = [
+            {n: "أحمر", h: "#ff0000"}, {n: "أحمر قرمزي", h: "#dc143c"}, {n: "أحمر ناري", h: "#b22222"}, {n: "أحمر داكن", h: "#8b0000"},
+            {n: "أحمر فاتح", h: "#ff6347"}, {n: "أحمر طوبي", h: "#cd5c5c"}, {n: "أحمر مرجاني", h: "#ff7f50"}, {n: "أحمر كرزي", h: "#de3163"},
+            {n: "أحمر خمري", h: "#800000"}, {n: "أحمر توتي", h: "#c2185b"}, {n: "أحمر قرميدي", h: "#e34234"}, {n: "أحمر مرّ", h: "#a52a2a"},
+            {n: "برتقالي", h: "#ffa500"}, {n: "برتقالي محروق", h: "#cc5500"}, {n: "برتقالي داكن", h: "#ff8c00"}, {n: "برتقالي فاتح", h: "#ffb347"},
+            {n: "مشمشي", h: "#fbceb1"}, {n: "خوخي", h: "#ffe5b4"}, {n: "مرجاني", h: "#ff7f50"}, {n: "نحاسي", h: "#b87333"},
+            {n: "أصفر", h: "#ffff00"}, {n: "أصفر ذهبي", h: "#ffd700"}, {n: "أصفر ليموني", h: "#fff44f"}, {n: "أصفر باهت", h: "#ffffe0"},
+            {n: "أصفر خردلي", h: "#ffdb58"}, {n: "أصفر كهرماني", h: "#ffbf00"}, {n: "أصفر قشدي", h: "#fffdd0"}, {n: "عاجي", h: "#fffff0"},
+            {n: "أخضر", h: "#008000"}, {n: "أخضر ليموني", h: "#32cd32"}, {n: "أخضر فاتح", h: "#90ee90"}, {n: "أخضر داكن", h: "#006400"},
+            {n: "أخضر غابي", h: "#228b22"}, {n: "أخضر زيتوني", h: "#808000"}, {n: "أخضر نعناعي", h: "#98ff98"}, {n: "أخضر زمردي", h: "#50c878"},
+            {n: "أخضر مريمي", h: "#9caf88"}, {n: "أخضر طحلبي", h: "#8a9a5b"}, {n: "أخضر تفاحي", h: "#8db600"}, {n: "أخضر بحري", h: "#2e8b57"},
+            {n: "فيروزي", h: "#40e0d0"}, {n: "فيروزي داكن", h: "#00ced1"}, {n: "أخضر مزرق", h: "#008b8b"}, {n: "نعناعي فاتح", h: "#aaf0d1"},
+            {n: "أزرق", h: "#0000ff"}, {n: "أزرق سماوي", h: "#87ceeb"}, {n: "أزرق فاتح", h: "#add8e6"}, {n: "أزرق داكن", h: "#00008b"},
+            {n: "أزرق ملكي", h: "#4169e1"}, {n: "أزرق بحري", h: "#000080"}, {n: "أزرق فولاذي", h: "#4682b4"}, {n: "أزرق سماوي فاتح", h: "#00bfff"},
+            {n: "أزرق نيلي", h: "#4b0082"}, {n: "أزرق كوبالت", h: "#0047ab"}, {n: "أزرق كهربائي", h: "#7df9ff"}, {n: "أزرق بترولي", h: "#006d77"},
+            {n: "أزرق ثلجي", h: "#e0ffff"}, {n: "أزرق غامق", h: "#191970"}, {n: "أزرق لازوردي", h: "#007fff"}, {n: "أزرق بنفسجي", h: "#8a2be2"},
+            {n: "بنفسجي", h: "#800080"}, {n: "بنفسجي فاتح", h: "#dda0dd"}, {n: "بنفسجي داكن", h: "#4b0082"}, {n: "بنفسجي مزرق", h: "#6a5acd"},
+            {n: "أرجواني", h: "#8b008b"}, {n: "أرجواني فاتح", h: "#ba55d3"}, {n: "ليلكي", h: "#c8a2c8"}, {n: "لافندر", h: "#e6e6fa"},
+            {n: "موف", h: "#e0b0ff"}, {n: "برقوقي", h: "#8e4585"}, {n: "نيلي", h: "#4b0082"}, {n: "أماثيست", h: "#9966cc"},
+            {n: "وردي", h: "#ffc0cb"}, {n: "وردي فاتح", h: "#ffb6c1"}, {n: "وردي داكن", h: "#ff1493"}, {n: "وردي ساخن", h: "#ff69b4"},
+            {n: "وردي مغبر", h: "#dcae96"}, {n: "وردي سلموني", h: "#fa8072"}, {n: "وردي فوشيا", h: "#ff00ff"}, {n: "وردي باستيل", h: "#f8c8dc"},
+            {n: "وردي بودري", h: "#f2d2bd"}, {n: "وردي توتي", h: "#c54b8c"}, {n: "وردي خوخي", h: "#ffdab9"}, {n: "وردي مرجاني", h: "#f88379"},
+            {n: "بني", h: "#a52a2a"}, {n: "بني فاتح", h: "#cd853f"}, {n: "بني داكن", h: "#654321"}, {n: "بني شوكولاتي", h: "#7b3f00"},
+            {n: "بني كستنائي", h: "#954535"}, {n: "بني رملي", h: "#f4a460"}, {n: "بني قهوي", h: "#6f4e37"}, {n: "بني كراميل", h: "#c68e17"},
+            {n: "بيج", h: "#f5f5dc"}, {n: "كاكي", h: "#c3b091"}, {n: "قمحي", h: "#f5deb3"}, {n: "تان", h: "#d2b48c"},
+            {n: "أبيض", h: "#ffffff"}, {n: "أبيض ثلجي", h: "#f0ffff"}, {n: "أبيض دخاني", h: "#f5f5f5"}, {n: "أسود", h: "#000000"},
+            {n: "رمادي", h: "#808080"}, {n: "رمادي فاتح", h: "#d3d3d3"}, {n: "رمادي داكن", h: "#a9a9a9"}, {n: "رمادي فحمي", h: "#36454f"},
+            {n: "رمادي فضي", h: "#c0c0c0"}, {n: "رمادي أردوازي", h: "#708090"}, {n: "رمادي دافئ", h: "#b8b0a5"}, {n: "رمادي بارد", h: "#a7b0b5"}
+        ];
+
+        const picker1 = document.getElementById("picker1");
+        const picker2 = document.getElementById("picker2");
+        const hex1 = document.getElementById("hex1");
+        const hex2 = document.getElementById("hex2");
+        const preview1 = document.getElementById("preview1");
+        const preview2 = document.getElementById("preview2");
+        const resultPreview = document.getElementById("resultPreview");
+        const resultHex = document.getElementById("resultHex");
+        const resultRgb = document.getElementById("resultRgb");
+        const colorNameText = document.getElementById("colorNameText");
+        const colorGrid = document.getElementById("colorGrid");
+        const colorSearch = document.getElementById("colorSearch");
+        let selectedTarget = 1;
+
+        function hexToRgb(h) {
+            let r = parseInt(h.slice(1, 3), 16), g = parseInt(h.slice(3, 5), 16), b = parseInt(h.slice(5, 7), 16);
+            return {r, g, b};
+        }
+
+        function rgbToLab({r, g, b}) {
+            [r, g, b] = [r, g, b].map(value => {
+                value /= 255;
+                return value > 0.04045 ? ((value + 0.055) / 1.055) ** 2.4 : value / 12.92;
+            });
+            let x = (r * 0.4124 + g * 0.3576 + b * 0.1805) / 0.95047;
+            let y = (r * 0.2126 + g * 0.7152 + b * 0.0722);
+            let z = (r * 0.0193 + g * 0.1192 + b * 0.9505) / 1.08883;
+            [x, y, z] = [x, y, z].map(value => value > 0.008856 ? Math.cbrt(value) : 7.787 * value + 16 / 116);
+            return {l: 116 * y - 16, a: 500 * (x - y), b: 200 * (y - z)};
+        }
+
+        function getClosestColorName(hex) {
+            let lab = rgbToLab(hexToRgb(hex));
+            let min = Infinity, name = "لون مخصص";
+            COLORS.forEach(c => {
+                let candidate = rgbToLab(hexToRgb(c.h));
+                let dist = Math.sqrt((lab.l - candidate.l) ** 2 + (lab.a - candidate.a) ** 2 + (lab.b - candidate.b) ** 2);
+                if (dist < min) { min = dist; name = c.n; }
+            });
+            return name;
+        }
+
+        function update() {
+            hex1.value = picker1.value;
+            hex2.value = picker2.value;
+            let c1 = hexToRgb(picker1.value);
+            let c2 = hexToRgb(picker2.value);
+            let res = { r: Math.round((c1.r + c2.r)/2), g: Math.round((c1.g + c2.g)/2), b: Math.round((c1.b + c2.b)/2) };
+            let hex = "#" + ((1 << 24) + (res.r << 16) + (res.g << 8) + res.b).toString(16).slice(1);
+            
+            preview1.style.backgroundColor = picker1.value;
+            preview2.style.backgroundColor = picker2.value;
+            resultPreview.style.backgroundColor = hex;
+            resultHex.innerText = hex;
+            resultRgb.innerText = `rgb(${res.r}, ${res.g}, ${res.b})`;
+            colorNameText.innerText = getClosestColorName(hex);
+        }
+
+        function renderColors() {
+            const query = colorSearch.value.trim().toLowerCase();
+            const filtered = COLORS.filter(color => color.n.toLowerCase().includes(query) || color.h.includes(query));
+            colorGrid.replaceChildren();
+            if (!filtered.length) {
+                const empty = document.createElement("p");
+                empty.className = "empty-results";
+                empty.textContent = "لا توجد ألوان مطابقة لبحثك.";
+                colorGrid.append(empty);
+                return;
+            }
+            filtered.forEach(color => {
+                const button = document.createElement("button");
+                button.type = "button";
+                button.className = "color-option";
+                button.setAttribute("aria-label", `اختيار ${color.n} ${color.h} للون ${selectedTarget}`);
+                button.innerHTML = `<span class="swatch" style="background-color:${color.h}"></span><span class="swatch-name"></span><span class="swatch-hex"></span>`;
+                button.querySelector(".swatch-name").textContent = color.n;
+                button.querySelector(".swatch-hex").textContent = color.h;
+                button.addEventListener("click", () => {
+                    const picker = selectedTarget === 1 ? picker1 : picker2;
+                    picker.value = color.h;
+                    update();
+                });
+                colorGrid.append(button);
+            });
+        }
+
+        [picker1, picker2].forEach(picker => picker.addEventListener("input", update));
+        [[hex1, picker1], [hex2, picker2]].forEach(([input, picker]) => {
+            input.addEventListener("input", () => {
+                const value = input.value.trim();
+                if (/^#[0-9a-f]{6}$/i.test(value)) {
+                    input.removeAttribute("aria-invalid");
+                    picker.value = value;
+                    update();
+                } else {
+                    input.setAttribute("aria-invalid", "true");
+                }
+            });
+            input.addEventListener("blur", () => {
+                if (input.getAttribute("aria-invalid") === "true") input.value = picker.value;
+                input.removeAttribute("aria-invalid");
+            });
+        });
+        document.querySelectorAll(".target-button").forEach(button => {
+            button.addEventListener("click", () => {
+                selectedTarget = Number(button.dataset.target);
+                document.querySelectorAll(".target-button").forEach(target => target.setAttribute("aria-pressed", String(target === button)));
+                renderColors();
+            });
+        });
+        colorSearch.addEventListener("input", renderColors);
+        document.getElementById("badgeHex").addEventListener("click", () => navigator.clipboard.writeText(resultHex.textContent));
+        document.getElementById("badgeRgb").addEventListener("click", () => navigator.clipboard.writeText(resultRgb.textContent));
+        renderColors();
+        update();
+    </script>
+</body>
+</html>
